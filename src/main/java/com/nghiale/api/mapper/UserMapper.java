@@ -6,17 +6,15 @@ import com.nghiale.api.model.User;
 public class UserMapper implements Mapper<User, UserDTO> {
 
 	@Override
-	public User fromDTO(UserDTO dto) {
+	public User convertToBO(UserDTO dto) {
+		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public UserDTO fromBO(User bo) {
+	public UserDTO convertToDTO(User bo) {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	public static void main(String[] args) {
-		UserMapper mapper = new UserMapper();
-		mapper.fromDTO(null);
-	}
+
 }

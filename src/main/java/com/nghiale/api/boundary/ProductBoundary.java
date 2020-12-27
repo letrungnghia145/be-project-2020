@@ -19,7 +19,6 @@ import com.nghiale.api.control.ProductControl;
 import com.nghiale.api.dto.ProductDTO;
 import com.nghiale.api.mapper.Mapper;
 import com.nghiale.api.model.Product;
-import com.nghiale.api.utils.ProductMapperUtils;
 
 @RestController
 @RequestMapping("/products")
@@ -32,33 +31,35 @@ public class ProductBoundary {
 	@GetMapping
 	public ResponseEntity<?> retrieveAllProducts() {
 		List<ProductDTO> dtos = new ArrayList<>();
-		control.getAllProducts().forEach(product -> dtos.add(ProductMapperUtils.toDTO(product)));
+		control.getAllProducts().forEach(product -> dtos.add(mapper.convertToDTO(product)));
 		return ResponseEntity.status(HttpStatus.OK).body(dtos);
 	}
 
 	@GetMapping("/{pid}")
 	public ResponseEntity<?> retrieveProduct(@PathVariable Long pid) {
 		Product product = control.getProductDetails(pid);
-		return ResponseEntity.status(HttpStatus.OK).body(ProductMapperUtils.toDTO(product));
+		return ResponseEntity.status(HttpStatus.OK).body(mapper.convertToDTO(product));
 	}
 
 	@PostMapping
 	public ResponseEntity<?> createProduct(@RequestBody ProductDTO dto) {
-		Product product = control.addProduct(mapper.fromDTO(dto));
-		return ResponseEntity.status(HttpStatus.CREATED).body(product);
+		Product product = control.addProduct(mapper.convertToBO(dto));
+		dto.setId(product.getId());
+		return ResponseEntity.status(HttpStatus.CREATED).body(dto);
 	}
 
 	@PutMapping("/{pid}")
 	public ResponseEntity<?> updateProduct(@PathVariable Long pid, @RequestBody ProductDTO dto) {
 		dto.setId(pid);
-		Product product = control.updateProductDetails(mapper.fromDTO(dto));
-		return ResponseEntity.status(HttpStatus.OK).body(product);
+		Product bo = mapper.convertToBO(dto);
+		Product product = control.updateProductDetails(bo);
+		return ResponseEntity.status(HttpStatus.OK).body(mapper.convertToDTO(product));
 	}
 
 	@DeleteMapping("/{pid}")
 	public ResponseEntity<?> deleteProduct(@PathVariable Long pid) {
 		Product product = control.deleteProduct(pid);
-		return ResponseEntity.status(HttpStatus.OK).body(ProductMapperUtils.toDTO(product));
+		return ResponseEntity.status(HttpStatus.OK).body(mapper.convertToDTO(product));
 	}
 
 	@GetMapping("/{pid}/images")

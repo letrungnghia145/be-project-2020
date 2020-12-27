@@ -2,6 +2,8 @@ package com.nghiale.api.model;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -73,5 +75,28 @@ public class Product extends AbstractModel {
 	public void setCategory(Category category) {
 		this.category = category;
 		category.getProducts().add(this);
+	}
+
+	public void setImages(List<String> imageLinks) {
+		if (imageLinks != null) {
+			this.images = new HashSet<>();
+			imageLinks.forEach(link -> {
+				Image image = new Image();
+				image.setLink(link);
+				image.setDescription("Image of product " + this.getName());
+				this.addImage(image);
+			});
+		}
+	}
+
+	public void setImages(Set<Image> images) {
+		this.images = images;
+	}
+
+	public void setCategory(Long id) {
+		if (id != null) {
+			Category category = new Category(id);
+			this.setCategory(category);
+		}
 	}
 }

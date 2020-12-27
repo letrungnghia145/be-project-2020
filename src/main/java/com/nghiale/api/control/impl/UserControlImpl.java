@@ -13,7 +13,7 @@ import com.nghiale.api.entity.UserEntity;
 import com.nghiale.api.model.CartItem;
 import com.nghiale.api.model.Order;
 import com.nghiale.api.model.User;
-import com.nghiale.api.utils.UserMapperUtils;
+import com.nghiale.api.utils.ConvertUtils;
 
 @Service
 public class UserControlImpl implements UserControl {
@@ -38,7 +38,7 @@ public class UserControlImpl implements UserControl {
 	@Override
 	public User updateUserDetails(User user) {
 		Optional<User> findById = userEntity.findById(user.getId());
-		findById.ifPresent(bo -> UserMapperUtils.map(user, bo));
+		findById.ifPresent(bo -> ConvertUtils.convert(bo, user));
 		return findById.get();
 	}
 

@@ -25,4 +25,8 @@ public class Category extends AbstractModel {
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "category")
 	@JsonIgnore
 	private Set<Product> products = new HashSet<>();
+
+	public Category(Long id) {
+		this.id = id;
+	}
 }

@@ -1,10 +1,5 @@
 package com.nghiale.api;
 
-import java.math.BigDecimal;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
-
 import javax.persistence.EntityManager;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,16 +14,11 @@ import com.nghiale.api.control.ProductControl;
 import com.nghiale.api.control.UserControl;
 import com.nghiale.api.entity.ProductEntity;
 import com.nghiale.api.entity.UserEntity;
-import com.nghiale.api.model.Category;
-import com.nghiale.api.model.Customer;
-import com.nghiale.api.model.Image;
-import com.nghiale.api.model.Order;
-import com.nghiale.api.model.Product;
 import com.nghiale.api.model.User;
-import com.nghiale.api.utils.UserMapperUtils;
 
 @SpringBootApplication(exclude = SecurityAutoConfiguration.class)
 @EntityScan(basePackages = "com.nghiale.api.model")
+@SuppressWarnings({ "unused" })
 public class ApiApplication implements CommandLineRunner {
 	@Autowired
 	private ProductEntity productEntity;

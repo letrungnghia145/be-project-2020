@@ -15,7 +15,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-@EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
+@EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
 public class Image extends AbstractModel {
 	private static final long serialVersionUID = -7036987774546848193L;
 	@EqualsAndHashCode.Include

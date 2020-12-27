@@ -21,5 +21,5 @@ public abstract class AbstractModel implements Serializable {
 	private static final long serialVersionUID = 338192889915094775L;
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+	protected Long id;
 }

@@ -13,6 +13,7 @@ import com.nghiale.api.entity.ProductEntity;
 import com.nghiale.api.model.Evaluate;
 import com.nghiale.api.model.Image;
 import com.nghiale.api.model.Product;
+import com.nghiale.api.utils.ConvertUtils;
 
 @Service
 public class ProductControlImpl implements ProductControl {
@@ -30,8 +31,13 @@ public class ProductControlImpl implements ProductControl {
 	}
 
 	@Override
+	@Transactional
 	public Product updateProductDetails(Product product) {
-		return productEntity.save(product);
+		Optional<Product> findById = productEntity.findById(product.getId());
+		findById.ifPresent(bo -> {
+			ConvertUtils.convert(product, bo);
+		});
+		return findById.get();
 	}
 
 	@Override
