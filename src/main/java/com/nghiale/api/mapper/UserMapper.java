@@ -3,11 +3,10 @@ package com.nghiale.api.mapper;
 import com.nghiale.api.dto.UserDTO;
 import com.nghiale.api.model.User;
 
-public class UserMapper implements Mapper<User, UserDTO>{
+public class UserMapper implements Mapper<User, UserDTO> {
 
 	@Override
 	public User fromDTO(UserDTO dto) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -16,5 +15,8 @@ public class UserMapper implements Mapper<User, UserDTO>{
 		// TODO Auto-generated method stub
 		return null;
 	}
-
+	public static void main(String[] args) {
+		UserMapper mapper = new UserMapper();
+		mapper.fromDTO(null);
+	}
 }

@@ -28,7 +28,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @NamedEntityGraph(name = "Product.graph", attributeNodes = { @NamedAttributeNode("category"),
 		@NamedAttributeNode("images"), @NamedAttributeNode("evaluates") })
-@JsonIgnoreProperties(value = { "evaluates", "images", "customers", "category" })
+@JsonIgnoreProperties(value = { "evaluates", "customers" })
 public class Product extends AbstractModel {
 	private static final long serialVersionUID = 8907993020628938819L;
 	private String name;

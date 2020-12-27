@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.nghiale.api.control.ProductControl;
 import com.nghiale.api.dto.ProductDTO;
+import com.nghiale.api.mapper.Mapper;
 import com.nghiale.api.model.Product;
 import com.nghiale.api.utils.ProductMapperUtils;
 
@@ -25,6 +26,8 @@ import com.nghiale.api.utils.ProductMapperUtils;
 public class ProductBoundary {
 	@Autowired
 	private ProductControl control;
+	@Autowired
+	private Mapper<Product, ProductDTO> mapper;
 
 	@GetMapping
 	public ResponseEntity<?> retrieveAllProducts() {
@@ -41,13 +44,15 @@ public class ProductBoundary {
 
 	@PostMapping
 	public ResponseEntity<?> createProduct(@RequestBody ProductDTO dto) {
-		Product product = control.addProduct(ProductMapperUtils.toBO(dto));
-		return ResponseEntity.status(HttpStatus.CREATED).body(ProductMapperUtils.toDTO(product));
+		Product product = control.addProduct(mapper.fromDTO(dto));
+		return ResponseEntity.status(HttpStatus.CREATED).body(product);
 	}
 
 	@PutMapping("/{pid}")
-	public void updateProduct(@PathVariable Long pid, ProductDTO dto) {
-
+	public ResponseEntity<?> updateProduct(@PathVariable Long pid, @RequestBody ProductDTO dto) {
+		dto.setId(pid);
+		Product product = control.updateProductDetails(mapper.fromDTO(dto));
+		return ResponseEntity.status(HttpStatus.OK).body(product);
 	}
 
 	@DeleteMapping("/{pid}")

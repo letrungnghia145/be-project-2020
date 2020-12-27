@@ -7,6 +7,8 @@ import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -21,5 +23,6 @@ public class Category extends AbstractModel {
 	private String description;
 
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "category")
+	@JsonIgnore
 	private Set<Product> products = new HashSet<>();
 }
