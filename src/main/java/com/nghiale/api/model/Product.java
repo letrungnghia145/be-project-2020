@@ -10,9 +10,13 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedAttributeNode;
+import javax.persistence.NamedEntityGraph;
 import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,6 +26,9 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
+@NamedEntityGraph(name = "Product.graph", attributeNodes = { @NamedAttributeNode("category"),
+		@NamedAttributeNode("images"), @NamedAttributeNode("evaluates") })
+@JsonIgnoreProperties(value = { "evaluates", "images", "customers", "category" })
 public class Product extends AbstractModel {
 	private static final long serialVersionUID = 8907993020628938819L;
 	private String name;
@@ -42,4 +49,29 @@ public class Product extends AbstractModel {
 
 	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "wishlist")
 	private Set<Customer> customers;
+
+	public void addImage(Image image) {
+		this.images.add(image);
+		image.setProduct(this);
+	}
+
+	public void deleteImage(Image image) {
+		this.images.remove(image);
+		image.setProduct(null);
+	}
+
+	public void addEvaluate(Evaluate evaluate) {
+		this.evaluates.add(evaluate);
+		evaluate.setProduct(this);
+	}
+
+	public void deleteEvaluate(Evaluate evaluate) {
+		this.evaluates.remove(evaluate);
+		evaluate.setProduct(null);
+	}
+
+	public void setCategory(Category category) {
+		this.category = category;
+		category.getProducts().add(this);
+	}
 }

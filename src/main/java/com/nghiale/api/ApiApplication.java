@@ -1,5 +1,10 @@
 package com.nghiale.api;
 
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
+
 import javax.persistence.EntityManager;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,10 +15,29 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.nghiale.api.control.ProductControl;
+import com.nghiale.api.control.UserControl;
+import com.nghiale.api.entity.ProductEntity;
+import com.nghiale.api.entity.UserEntity;
+import com.nghiale.api.model.Category;
+import com.nghiale.api.model.Customer;
+import com.nghiale.api.model.Image;
+import com.nghiale.api.model.Order;
+import com.nghiale.api.model.Product;
+import com.nghiale.api.model.User;
+import com.nghiale.api.utils.UserMapperUtils;
+
 @SpringBootApplication(exclude = SecurityAutoConfiguration.class)
 @EntityScan(basePackages = "com.nghiale.api.model")
-@Transactional
 public class ApiApplication implements CommandLineRunner {
+	@Autowired
+	private ProductEntity productEntity;
+	@Autowired
+	private ProductControl control;
+	@Autowired
+	private UserEntity<User> userEntity;
+	@Autowired
+	private UserControl userControl;
 	@Autowired
 	private EntityManager em;
 
@@ -22,15 +46,7 @@ public class ApiApplication implements CommandLineRunner {
 	}
 
 	@Override
+	@Transactional
 	public void run(String... args) throws Exception {
-//		Customer customer = em
-//				.createQuery(QueryUtil.findSingle(Customer.class, paramName).createQuery(), Customer.class)
-//				.setParameter(paramName, 1L).getSingleResult();
-//		System.out.println(customer);
-//		Customer customer = repository.retrieve(3L);
-//		System.out.println(customer.getItems());
-//		System.out.println(customer.getOrders());
-//		System.out.println(customer.getRoles());
-//		System.out.println(customer.getWishlist());
 	}
 }
