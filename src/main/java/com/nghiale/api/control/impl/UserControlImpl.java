@@ -6,11 +6,13 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.nghiale.api.control.UserControl;
 import com.nghiale.api.entity.CustomerEntity;
 import com.nghiale.api.entity.UserEntity;
 import com.nghiale.api.model.CartItem;
+import com.nghiale.api.model.Evaluate;
 import com.nghiale.api.model.Order;
 import com.nghiale.api.model.User;
 import com.nghiale.api.utils.ConvertUtils;
@@ -29,6 +31,11 @@ public class UserControlImpl implements UserControl {
 	}
 
 	@Override
+	public List<User> getAllUsers() {
+		return userEntity.findAll();
+	}
+
+	@Override
 	public User deleteUser(Long userID) {
 		Optional<User> findById = userEntity.findById(userID);
 		findById.ifPresent(user -> userEntity.delete(user));
@@ -36,9 +43,10 @@ public class UserControlImpl implements UserControl {
 	}
 
 	@Override
+	@Transactional
 	public User updateUserDetails(User user) {
 		Optional<User> findById = userEntity.findById(user.getId());
-		findById.ifPresent(bo -> ConvertUtils.convert(bo, user));
+		findById.ifPresent(bo -> ConvertUtils.convert(user, bo));
 		return findById.get();
 	}
 
@@ -79,6 +87,29 @@ public class UserControlImpl implements UserControl {
 	public List<CartItem> updateCartItemQuantity(Long customerID, CartItem item) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public List<Evaluate> getAllCustomerEvaluate(Long customerID) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<Evaluate> addCustomerEvaluate(Long customerID, Evaluate evaluate) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<Evaluate> deleteCustomerEvaluate(Long customerID, Long evaluateID) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Class<? extends User> getUserClassType(Long userID) {
+		return userEntity.findById(userID).get().getClass();
 	}
 
 }

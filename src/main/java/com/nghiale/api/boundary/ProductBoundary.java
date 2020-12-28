@@ -1,6 +1,5 @@
 package com.nghiale.api.boundary;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,8 +15,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.nghiale.api.control.ProductControl;
+import com.nghiale.api.dto.ImageDTO;
 import com.nghiale.api.dto.ProductDTO;
 import com.nghiale.api.mapper.Mapper;
+import com.nghiale.api.model.Image;
 import com.nghiale.api.model.Product;
 
 @RestController
@@ -26,65 +27,69 @@ public class ProductBoundary {
 	@Autowired
 	private ProductControl control;
 	@Autowired
-	private Mapper<Product, ProductDTO> mapper;
+	private Mapper<Product, ProductDTO> productMapper;
+	@Autowired
+	private Mapper<Image, ImageDTO> productImageMapper;
 
 	@GetMapping
 	public ResponseEntity<?> retrieveAllProducts() {
-		List<ProductDTO> dtos = new ArrayList<>();
-		control.getAllProducts().forEach(product -> dtos.add(mapper.convertToDTO(product)));
-		return ResponseEntity.status(HttpStatus.OK).body(dtos);
+		List<Product> products = control.getAllProducts();
+		return ResponseEntity.status(HttpStatus.OK).body(productMapper.convertToDTOList(products));
 	}
 
 	@GetMapping("/{pid}")
 	public ResponseEntity<?> retrieveProduct(@PathVariable Long pid) {
 		Product product = control.getProductDetails(pid);
-		return ResponseEntity.status(HttpStatus.OK).body(mapper.convertToDTO(product));
+		return ResponseEntity.status(HttpStatus.OK).body(productMapper.convertToDTO(product));
 	}
 
 	@PostMapping
 	public ResponseEntity<?> createProduct(@RequestBody ProductDTO dto) {
-		Product product = control.addProduct(mapper.convertToBO(dto));
-		dto.setId(product.getId());
-		return ResponseEntity.status(HttpStatus.CREATED).body(dto);
+		Product product = control.addProduct(productMapper.convertToBO(dto));
+		return ResponseEntity.status(HttpStatus.CREATED).body(productMapper.convertToDTO(product));
 	}
 
 	@PutMapping("/{pid}")
 	public ResponseEntity<?> updateProduct(@PathVariable Long pid, @RequestBody ProductDTO dto) {
 		dto.setId(pid);
-		Product bo = mapper.convertToBO(dto);
+		Product bo = productMapper.convertToBO(dto);
 		Product product = control.updateProductDetails(bo);
-		return ResponseEntity.status(HttpStatus.OK).body(mapper.convertToDTO(product));
+		return ResponseEntity.status(HttpStatus.OK).body(productMapper.convertToDTO(product));
 	}
 
 	@DeleteMapping("/{pid}")
 	public ResponseEntity<?> deleteProduct(@PathVariable Long pid) {
 		Product product = control.deleteProduct(pid);
-		return ResponseEntity.status(HttpStatus.OK).body(mapper.convertToDTO(product));
+		return ResponseEntity.status(HttpStatus.OK).body(productMapper.convertToDTO(product));
 	}
 
 	@GetMapping("/{pid}/images")
-	public void retrieveAllProductImages(@PathVariable Long pid) {
-
+	public ResponseEntity<?> retrieveAllProductImages(@PathVariable Long pid) {
+		List<Image> images = control.getAllProductImages(pid);
+		return ResponseEntity.status(HttpStatus.OK).body(productImageMapper.convertToDTOList(images));
 	}
 
-	@GetMapping("/{pid}/images/{iid}")
-	public void retrieveProductImage(@PathVariable Long pid, @PathVariable Long iid) {
-
-	}
-
+//
+//	@GetMapping("/{pid}/images/{iid}")
+//	public void retrieveProductImage(@PathVariable Long pid, @PathVariable Long iid) {
+//		
+//	}
 	@PostMapping("/{pid}/images")
-	public void createProductImage(@PathVariable Long pid) {
-
+	public ResponseEntity<?> createProductImage(@PathVariable Long pid, @RequestBody List<ImageDTO> imageDTOs) {
+		List<Image> images = productImageMapper.convertToBOList(imageDTOs);
+		return ResponseEntity.status(HttpStatus.CREATED)
+				.body(productImageMapper.convertToDTOList(control.addProductImages(pid, images)));
 	}
 
 	@DeleteMapping("/{pid}/images/{iid}")
-	public void deleteProductImage(@PathVariable Long pid, @PathVariable Long iid) {
-
+	public ResponseEntity<?> deleteProductImage(@PathVariable Long pid, @PathVariable Long iid) {
+		List<Image> images = control.deleteProductImage(pid, iid);
+		return ResponseEntity.status(HttpStatus.OK).body(productImageMapper.convertToDTOList(images));
 	}
 
 	@GetMapping("/{pid}/evaluates")
 	public void retrieveAllProductEvaluates(@PathVariable Long pid) {
-
+		control.getProductEvaluates(pid);
 	}
 
 	@PostMapping("/{pid}/evaluates")

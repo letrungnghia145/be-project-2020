@@ -19,6 +19,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.nghiale.api.dto.ImageDTO;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -77,13 +78,14 @@ public class Product extends AbstractModel {
 		category.getProducts().add(this);
 	}
 
-	public void setImages(List<String> imageLinks) {
-		if (imageLinks != null) {
+	public void setImages(List<ImageDTO> images) {
+		if (images != null) {
 			this.images = new HashSet<>();
-			imageLinks.forEach(link -> {
+			images.forEach(dtoImage -> {
 				Image image = new Image();
-				image.setLink(link);
-				image.setDescription("Image of product " + this.getName());
+				image.setLink(dtoImage.getLink());
+				String dtoDes = dtoImage.getDescription();
+				image.setDescription(dtoDes.equals("default") ?("Image of product " + this.getName()):dtoDes);
 				this.addImage(image);
 			});
 		}

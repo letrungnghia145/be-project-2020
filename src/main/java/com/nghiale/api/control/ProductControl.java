@@ -17,11 +17,11 @@ public interface ProductControl {
 
 	public Product getProductDetails(Long productID);
 
-	public List<Image> getProductImages(Long productID);
+	public List<Image> getAllProductImages(Long productID);
 
-	public Product addProductImage(Long productID, Image image);
+	public List<Image> addProductImages(Long productID, List<Image> images);
 
-	public Product deleteProductImage(Long productID, Long imageID);
+	public List<Image> deleteProductImage(Long productID, Long imageID);
 
 	public List<Evaluate> getProductEvaluates(Long productID);
 

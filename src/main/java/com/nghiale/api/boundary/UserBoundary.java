@@ -1,39 +1,62 @@
 package com.nghiale.api.boundary;
 
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.nghiale.api.control.UserControl;
+import com.nghiale.api.dto.UserDTO;
+import com.nghiale.api.mapper.UserMapper;
+import com.nghiale.api.model.Order;
+import com.nghiale.api.model.User;
 
 @RestController
 @RequestMapping("/users")
 public class UserBoundary {
-	@GetMapping
-	public void retrieveAllUsers() {
+	@Autowired
+	private UserControl control;
+	@Autowired
+	private UserMapper mapper;
 
+	@GetMapping
+	public ResponseEntity<?> retrieveAllUsers() {
+		List<User> users = control.getAllUsers();
+		return ResponseEntity.status(HttpStatus.OK).body(mapper.convertToDTOList(users));
 	}
 
 	@GetMapping("/{uid}")
-	public void retrieveUser(@PathVariable Long uid) {
-
+	public ResponseEntity<?> retrieveUser(@PathVariable Long uid) {
+		User user = control.getUserDetails(uid);
+		return ResponseEntity.status(HttpStatus.OK).body(mapper.convertToDTO(user));
 	}
 
 	@DeleteMapping("/{uid}")
-	public void deleteUser(@PathVariable Long uid) {
-
+	public ResponseEntity<?> deleteUser(@PathVariable Long uid) {
+		User user = control.deleteUser(uid);
+		return ResponseEntity.status(HttpStatus.OK).body(mapper.convertToDTO(user));
 	}
 
 	@PutMapping("/{uid}")
-	public void updateUser(@PathVariable Long uid) {
-
+	public ResponseEntity<?> updateUser(@PathVariable Long uid, @RequestBody UserDTO dto) {
+		mapper.setUserClassType(control.getUserClassType(uid));
+		User user = control.updateUserDetails(mapper.convertToBO(dto));
+		return ResponseEntity.status(HttpStatus.OK).body(mapper.convertToDTO(user));
 	}
 
 	@GetMapping("/{cid}/orders")
-	public void retrieveAllCustomerOrders(@PathVariable Long cid) {
-
+	public ResponseEntity<?> retrieveAllCustomerOrders(@PathVariable Long cid) {
+		List<Order> orders = control.getCustomerOrders(cid);
+		return ResponseEntity.status(HttpStatus.OK).body(orders);
 	}
 
 	@GetMapping("/{cid}/orders/{oid}")

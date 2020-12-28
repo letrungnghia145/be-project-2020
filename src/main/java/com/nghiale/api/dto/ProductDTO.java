@@ -27,5 +27,5 @@ public class ProductDTO {
 	private Long stock;
 	private String description;
 	private Long category;
-	private List<String> imageLinks;
+	private List<ImageDTO> images;
 }

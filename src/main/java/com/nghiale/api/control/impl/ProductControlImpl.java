@@ -54,7 +54,7 @@ public class ProductControlImpl implements ProductControl {
 	}
 
 	@Override
-	public List<Image> getProductImages(Long productID) {
+	public List<Image> getAllProductImages(Long productID) {
 		List<Image> images = new ArrayList<>();
 		productEntity.findByIdWithImagesGraph(productID).ifPresent(product -> {
 			product.getImages().forEach(image -> images.add(image));
@@ -63,22 +63,27 @@ public class ProductControlImpl implements ProductControl {
 	}
 
 	@Override
-	public Product addProductImage(Long productID, Image image) {
+	@Transactional
+	public List<Image> addProductImages(Long productID, List<Image> images) {
 		Optional<Product> findByIdWithImagesGraph = productEntity.findByIdWithImagesGraph(productID);
-		findByIdWithImagesGraph.ifPresent(product -> product.addImage(image));
-		return findByIdWithImagesGraph.get();
+		findByIdWithImagesGraph.ifPresent(product -> {
+			for (Image image : images) {
+				product.addImage(image);
+			}
+		});
+		return List.copyOf(findByIdWithImagesGraph.get().getImages());
 	}
 
 	@Override
 	@Transactional
-	public Product deleteProductImage(Long productID, Long imageID) {
+	public List<Image> deleteProductImage(Long productID, Long imageID) {
 		Optional<Product> findByIdWithImagesGraph = productEntity.findByIdWithImagesGraph(productID);
 		findByIdWithImagesGraph.ifPresent(product -> {
 			Image image = new Image();
 			image.setId(imageID);
 			product.deleteImage(image);
 		});
-		return findByIdWithImagesGraph.get();
+		return List.copyOf(findByIdWithImagesGraph.get().getImages());
 	}
 
 	@Override

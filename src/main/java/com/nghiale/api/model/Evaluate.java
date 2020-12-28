@@ -21,4 +21,13 @@ public class Evaluate extends AbstractModel {
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	private Product product;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	private Customer customer;
+
+	public Evaluate(String comment, Integer value) {
+		super();
+		this.comment = comment;
+		this.value = value;
+	}
 }

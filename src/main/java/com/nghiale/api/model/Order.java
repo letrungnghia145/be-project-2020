@@ -29,6 +29,11 @@ public class Order extends AbstractModel {
 	private BigDecimal total;
 	@ManyToOne(fetch = FetchType.LAZY)
 	private Customer customer;
+	private String consigneeName;
+	private String consigneePhone;
+	private String address;
+	@ManyToOne(fetch = FetchType.LAZY)
+	private PayMethod payMethod;
 	@OneToMany(mappedBy = "order", orphanRemoval = true, cascade = CascadeType.ALL)
 	private Set<OrderItem> items;
 }
