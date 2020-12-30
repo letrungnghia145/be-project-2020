@@ -18,6 +18,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class ProductDTO {
 	private Long id;
+	private String productCode;
 	private String name;
 	private BigDecimal price;
 	@Temporal(TemporalType.DATE)

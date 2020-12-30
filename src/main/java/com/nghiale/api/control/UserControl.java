@@ -8,6 +8,9 @@ import com.nghiale.api.model.Order;
 import com.nghiale.api.model.User;
 
 public interface UserControl {
+	
+	public User addUser(User user);
+	
 	public User getUserDetails(Long userID);
 	
 	public List<User> getAllUsers();

@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 
 import com.nghiale.api.dto.UserDTO;
 import com.nghiale.api.model.User;
-import com.nghiale.api.utils.ConvertUtils;
+import com.nghiale.api.utils.Converter;
 
 import lombok.Setter;
 
@@ -21,7 +21,7 @@ public class UserMapper implements Mapper<User, UserDTO> {
 		try {
 			Constructor<?> constructor = UserClassType.getConstructor();
 			to = constructor.newInstance();
-			ConvertUtils.convert(dto, to);
+			Converter.convert(dto, to);
 		} catch (Exception e) {
 			// TODO: handle exception
 		}
@@ -31,7 +31,7 @@ public class UserMapper implements Mapper<User, UserDTO> {
 	@Override
 	public UserDTO convertToDTO(User bo) {
 		UserDTO dto = new UserDTO();
-		ConvertUtils.convert(bo, dto);
+		Converter.convert(bo, dto);
 		return dto;
 	}
 

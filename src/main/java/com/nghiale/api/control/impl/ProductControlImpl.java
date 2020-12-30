@@ -13,7 +13,7 @@ import com.nghiale.api.entity.ProductEntity;
 import com.nghiale.api.model.Evaluate;
 import com.nghiale.api.model.Image;
 import com.nghiale.api.model.Product;
-import com.nghiale.api.utils.ConvertUtils;
+import com.nghiale.api.utils.Converter;
 
 @Service
 public class ProductControlImpl implements ProductControl {
@@ -35,7 +35,7 @@ public class ProductControlImpl implements ProductControl {
 	public Product updateProductDetails(Product product) {
 		Optional<Product> findById = productEntity.findById(product.getId());
 		findById.ifPresent(bo -> {
-			ConvertUtils.convert(product, bo);
+			Converter.convert(product, bo);
 		});
 		return findById.get();
 	}

@@ -12,6 +12,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 
+import org.hibernate.annotations.NaturalId;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -26,6 +28,8 @@ import lombok.ToString;
 @ToString
 public abstract class User extends AbstractModel {
 	private static final long serialVersionUID = -5352244872926449891L;
+	@NaturalId
+	private String userCode;
 	private String name;
 	private String phone;
 	private String address;

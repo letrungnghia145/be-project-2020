@@ -13,6 +13,8 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import org.hibernate.annotations.NaturalId;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -24,6 +26,8 @@ import lombok.Setter;
 @NoArgsConstructor
 public class Order extends AbstractModel {
 	private static final long serialVersionUID = 560226111253281070L;
+	@NaturalId
+	private String orderCode;
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date purchaseDate;
 	private BigDecimal total;

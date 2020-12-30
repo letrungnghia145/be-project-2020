@@ -1,16 +1,15 @@
 package com.nghiale.api.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
+@AllArgsConstructor
 @NoArgsConstructor
-public class UserDTO {
-	private String userCode;
-	private String name;
-	private String phone;
-	private String address;
-	private String email;
+public class RequestTokenCodeWrapper {
+	private String token;
+	private String code;
 }

@@ -11,6 +11,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.NamedAttributeNode;
 import javax.persistence.NamedEntityGraph;
+import javax.persistence.NamedSubgraph;
 import javax.persistence.OneToMany;
 
 import lombok.Getter;
@@ -22,7 +23,10 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-@NamedEntityGraph(name = "Customer.orders", attributeNodes = @NamedAttributeNode("orders"))
+@NamedEntityGraph(name = "Customer.orders", attributeNodes = @NamedAttributeNode(value = "orders", subgraph = "Order.graph"), subgraphs = {
+		@NamedSubgraph(name = "Order.graph", attributeNodes = { @NamedAttributeNode("payMethod"),
+				@NamedAttributeNode(value = "items", subgraph = "OrderItem.graph") }),
+		@NamedSubgraph(name = "OrderItem.graph", attributeNodes = @NamedAttributeNode("product")) })
 @NamedEntityGraph(name = "Customer.items", attributeNodes = @NamedAttributeNode("items"))
 public class Customer extends User {
 	private static final long serialVersionUID = 8993009225947782652L;

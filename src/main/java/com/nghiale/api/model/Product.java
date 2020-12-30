@@ -18,6 +18,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import org.hibernate.annotations.NaturalId;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.nghiale.api.dto.ImageDTO;
 
@@ -34,6 +36,8 @@ import lombok.Setter;
 @JsonIgnoreProperties(value = { "evaluates", "customers" })
 public class Product extends AbstractModel {
 	private static final long serialVersionUID = 8907993020628938819L;
+	@NaturalId
+	private String productCode;
 	private String name;
 	private BigDecimal price;
 	@Temporal(TemporalType.DATE)

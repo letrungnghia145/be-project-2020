@@ -4,7 +4,7 @@ import java.lang.reflect.Method;
 import java.util.Set;
 import java.util.function.Predicate;
 
-public class ConvertUtils {
+public class Converter {
 	private static final Predicate<Object> PREDICATE = value -> {
 		return (value != null);
 	};

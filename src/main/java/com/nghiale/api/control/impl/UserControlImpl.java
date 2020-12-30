@@ -15,7 +15,7 @@ import com.nghiale.api.model.CartItem;
 import com.nghiale.api.model.Evaluate;
 import com.nghiale.api.model.Order;
 import com.nghiale.api.model.User;
-import com.nghiale.api.utils.ConvertUtils;
+import com.nghiale.api.utils.Converter;
 
 @Service
 public class UserControlImpl implements UserControl {
@@ -23,6 +23,11 @@ public class UserControlImpl implements UserControl {
 	private UserEntity<User> userEntity;
 	@Autowired
 	private CustomerEntity customerEntity;
+
+	@Override
+	public User addUser(User user) {
+		return userEntity.save(user);
+	}
 
 	@Override
 	public User getUserDetails(Long userID) {
@@ -46,7 +51,7 @@ public class UserControlImpl implements UserControl {
 	@Transactional
 	public User updateUserDetails(User user) {
 		Optional<User> findById = userEntity.findById(user.getId());
-		findById.ifPresent(bo -> ConvertUtils.convert(user, bo));
+		findById.ifPresent(bo -> Converter.convert(user, bo));
 		return findById.get();
 	}
 
