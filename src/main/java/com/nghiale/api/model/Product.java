@@ -18,8 +18,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-import org.hibernate.annotations.NaturalId;
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.nghiale.api.dto.ImageDTO;
 
@@ -36,8 +34,9 @@ import lombok.Setter;
 @JsonIgnoreProperties(value = { "evaluates", "customers" })
 public class Product extends AbstractModel {
 	private static final long serialVersionUID = 8907993020628938819L;
-	@NaturalId
+	@Column(unique = true)
 	private String productCode;
+	@Column(unique = true)
 	private String name;
 	private BigDecimal price;
 	@Temporal(TemporalType.DATE)
@@ -56,6 +55,10 @@ public class Product extends AbstractModel {
 
 	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "wishlist")
 	private Set<Customer> customers;
+
+	public Product(Long id) {
+		super(id);
+	}
 
 	public void addImage(Image image) {
 		this.images.add(image);
@@ -89,7 +92,7 @@ public class Product extends AbstractModel {
 				Image image = new Image();
 				image.setLink(dtoImage.getLink());
 				String dtoDes = dtoImage.getDescription();
-				image.setDescription(dtoDes.equals("default") ?("Image of product " + this.getName()):dtoDes);
+				image.setDescription(dtoDes.equals("default") ? ("Image of product " + this.getName()) : dtoDes);
 				this.addImage(image);
 			});
 		}
@@ -105,4 +108,5 @@ public class Product extends AbstractModel {
 			this.setCategory(category);
 		}
 	}
+
 }

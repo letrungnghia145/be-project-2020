@@ -12,10 +12,12 @@ import com.nghiale.api.control.UserControl;
 import com.nghiale.api.entity.CustomerEntity;
 import com.nghiale.api.entity.UserEntity;
 import com.nghiale.api.model.CartItem;
+import com.nghiale.api.model.Customer;
 import com.nghiale.api.model.Evaluate;
 import com.nghiale.api.model.Order;
 import com.nghiale.api.model.User;
 import com.nghiale.api.utils.Converter;
+import com.nghiale.api.utils.RandomUtils;
 
 @Service
 public class UserControlImpl implements UserControl {
@@ -26,6 +28,12 @@ public class UserControlImpl implements UserControl {
 
 	@Override
 	public User addUser(User user) {
+		String userCode = RandomUtils.randomUserCode();
+//		String userCode = new String();
+//		do {
+//			userCode = RandomUtils.randomUserCode();
+//		} while (userEntity.isExistingUserCode(userCode));
+		user.setUserCode(userCode);
 		return userEntity.save(user);
 	}
 
@@ -84,8 +92,13 @@ public class UserControlImpl implements UserControl {
 	}
 
 	@Override
+//	@Transactional
 	public List<CartItem> addItemToCart(Long customerID, CartItem item) {
-		return null;
+		List<CartItem> items = new ArrayList<>();
+		Optional<Customer> findById = customerEntity.findById(customerID);
+		findById.ifPresent(customer -> customer.addCartItem(item));
+		findById.get().getItems().forEach(cartItem -> items.add(cartItem));
+		return items;
 	}
 
 	@Override
@@ -96,18 +109,6 @@ public class UserControlImpl implements UserControl {
 
 	@Override
 	public List<Evaluate> getAllCustomerEvaluate(Long customerID) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<Evaluate> addCustomerEvaluate(Long customerID, Evaluate evaluate) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<Evaluate> deleteCustomerEvaluate(Long customerID, Long evaluateID) {
 		// TODO Auto-generated method stub
 		return null;
 	}

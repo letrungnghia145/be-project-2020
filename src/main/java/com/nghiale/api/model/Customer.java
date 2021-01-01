@@ -40,6 +40,10 @@ public class Customer extends User {
 	@OneToMany(mappedBy = "customer", fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.ALL)
 	private Set<Evaluate> evaluates;
 
+	public Customer(Long id) {
+		super(id);
+	}
+
 	public void addOrder(Order order) {
 		this.orders.add(order);
 		order.setCustomer(this);
@@ -60,5 +64,15 @@ public class Customer extends User {
 	public void deleteEvaluate(Evaluate evaluate) {
 		this.evaluates.remove(evaluate);
 		evaluate.setCustomer(null);
+	}
+
+	public void addCartItem(CartItem cartItem) {
+		this.items.add(cartItem);
+		cartItem.setUser(this);
+	}
+
+	public void deleteCartItem(CartItem cartItem) {
+		this.items.remove(cartItem);
+		cartItem.setUser(null);
 	}
 }

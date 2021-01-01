@@ -1,8 +1,10 @@
 package com.nghiale.api.model;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ManyToMany;
 
@@ -16,9 +18,15 @@ import lombok.Setter;
 @NoArgsConstructor
 public class Role extends AbstractModel {
 	private static final long serialVersionUID = 3340536082287241801L;
+	@Column(unique = true)
 	private String name;
 	private String description;
 
 	@ManyToMany(mappedBy = "roles", cascade = CascadeType.ALL)
-	private Set<User> users;
+	private Set<User> users = new HashSet<>();
+
+	public Role(Long id) {
+		super(id);
+	}
+
 }

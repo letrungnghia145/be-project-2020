@@ -4,8 +4,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -16,14 +15,13 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ProductDTO {
 	private Long id;
 	private String productCode;
 	private String name;
 	private BigDecimal price;
-	@Temporal(TemporalType.DATE)
 	private Date mfg;
-	@Temporal(TemporalType.DATE)
 	private Date exp;
 	private Long stock;
 	private String description;

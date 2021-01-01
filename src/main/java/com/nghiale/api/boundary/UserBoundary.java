@@ -1,7 +1,7 @@
 package com.nghiale.api.boundary;
 
-import java.io.IOException;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -17,16 +17,19 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nghiale.api.control.UserControl;
+import com.nghiale.api.dto.CartItemDTO;
 import com.nghiale.api.dto.OrderDTO;
 import com.nghiale.api.dto.RequestTokenCodeWrapper;
 import com.nghiale.api.dto.UserDTO;
+import com.nghiale.api.dto.UserRegisterDTO;
+import com.nghiale.api.exception.ConfirmationCodeError;
 import com.nghiale.api.mapper.Mapper;
 import com.nghiale.api.mapper.UserMapper;
+import com.nghiale.api.model.Customer;
 import com.nghiale.api.model.Order;
+import com.nghiale.api.model.Role;
 import com.nghiale.api.model.User;
 import com.nghiale.api.utils.TimeUtils;
 import com.nghiale.api.utils.TokenUtils;
@@ -44,70 +47,76 @@ public class UserBoundary {
 	private ObjectMapper jsonMapper;
 
 	@PostMapping
-	public ResponseEntity<?> createUser(@RequestBody RequestTokenCodeWrapper wrapper)
-			throws JsonParseException, JsonMappingException, IOException {
+	//need secret key in token to compare (validate token is server send to client)
+	public ResponseEntity<?> createUser(@RequestBody RequestTokenCodeWrapper wrapper) throws Exception {
 		Map<String, Object> fromToken = TokenUtils.getInfomationFromToken(wrapper.getToken());
 		Date tokenExpriedDate = new Date((Long) fromToken.get("tokenExpriedDate"));
 		boolean isExpiredToken = TimeUtils.isExpired(tokenExpriedDate);
 		boolean isValidCode = wrapper.getCode().equals((String) fromToken.get("code"));
 		if (isValidCode && !isExpiredToken) {
-			return ResponseEntity.status(HttpStatus.OK).body("OK");
+			userMapper.setUserClassType(Customer.class);
+			User user = userMapper
+					.convertToBO(jsonMapper.convertValue(fromToken.get("userDTO"), UserRegisterDTO.class));
+			user.setRoles(new HashSet<>());
+			user.addRole(new Role(3L));
+			User addUser = control.addUser(user);
+			return ResponseEntity.status(HttpStatus.OK).body(userMapper.convertToDTO(addUser));
 		}
-		return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(!isValidCode ? "Invalid code!" : "Expired token!");
+		throw new ConfirmationCodeError(!isValidCode ? "Invalid code!" : "Expired token!");
 	}
 
 	@GetMapping
-	public ResponseEntity<?> retrieveAllUsers() {
+	public List<UserDTO> retrieveAllUsers() {
 		List<User> users = control.getAllUsers();
-		return ResponseEntity.status(HttpStatus.OK).body(userMapper.convertToDTOList(users));
+		return userMapper.convertToDTOList(users);
 	}
 
 	@GetMapping("/{uid}")
-	public ResponseEntity<?> retrieveUser(@PathVariable Long uid) {
+	public UserDTO retrieveUser(@PathVariable Long uid) {
 		User user = control.getUserDetails(uid);
-		return ResponseEntity.status(HttpStatus.OK).body(userMapper.convertToDTO(user));
+		return userMapper.convertToDTO(user);
 	}
 
 	@DeleteMapping("/{uid}")
-	public ResponseEntity<?> deleteUser(@PathVariable Long uid) {
+	public UserDTO deleteUser(@PathVariable Long uid) {
 		User user = control.deleteUser(uid);
-		return ResponseEntity.status(HttpStatus.OK).body(userMapper.convertToDTO(user));
+		return userMapper.convertToDTO(user);
 	}
 
 	@PutMapping("/{uid}")
-	public ResponseEntity<?> updateUserDetails(@PathVariable Long uid, @RequestBody UserDTO dto) {
+	public UserDTO updateUserDetails(@PathVariable Long uid, @RequestBody UserDTO dto) {
 		userMapper.setUserClassType(control.getUserClassType(uid));
 		User convertToBO = userMapper.convertToBO(dto);
 		convertToBO.setId(uid);
 		User user = control.updateUserDetails(convertToBO);
-		return ResponseEntity.status(HttpStatus.OK).body(userMapper.convertToDTO(user));
+		return userMapper.convertToDTO(user);
 	}
 
 	@GetMapping("/{cid}/orders")
-	public ResponseEntity<?> retrieveAllCustomerOrders(@PathVariable Long cid) {
+	public List<OrderDTO> retrieveAllCustomerOrders(@PathVariable Long cid) {
 		List<Order> orders = control.getCustomerOrders(cid);
-		return ResponseEntity.status(HttpStatus.OK).body(orderMapper.convertToDTOList(orders));
+		return orderMapper.convertToDTOList(orders);
 	}
 
 	@GetMapping("/{cid}/orders/{oid}")
-	public ResponseEntity<?> retrieveCustomerOrder(@PathVariable Long cid, @PathVariable Long oid) {
+	public OrderDTO retrieveCustomerOrder(@PathVariable Long cid, @PathVariable Long oid) {
 		Order order = control.getCustomerOrderDetails(cid, oid);
-		return ResponseEntity.status(HttpStatus.OK).body(orderMapper.convertToDTO(order));
+		return orderMapper.convertToDTO(order);
 	}
 
 	@GetMapping("/{cid}/cart-items")
 	public void retrieveAllCustomerCartItems(@PathVariable Long cid) {
-
 	}
 
 	@PostMapping("/{cid}/cart-items")
-	public void createCustomerCartItem(@PathVariable Long cid) {
-
+	public CartItemDTO createCustomerCartItem(@PathVariable Long cid, @RequestBody CartItemDTO cartItemDTO) {
+		System.out.println(cartItemDTO);
+		return cartItemDTO;
 	}
 
 	@PutMapping("/{cid}/cart-items/{iid}")
 	public void updateCustomerCartItem(@PathVariable Long cid, @PathVariable Long iid) {
-
+		
 	}
 
 	@DeleteMapping("/{cid}/cart-items/{iid}")

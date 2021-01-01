@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.nghiale.api.contants.AppContants;
 import com.nghiale.api.dto.ResponseTokenWrapper;
-import com.nghiale.api.dto.UserDTO;
+import com.nghiale.api.dto.UserRegisterDTO;
 import com.nghiale.api.utils.RandomUtils;
 import com.nghiale.api.utils.TokenUtils;
 
@@ -21,8 +21,8 @@ import com.nghiale.api.utils.TokenUtils;
 public class AppControlBoundary {
 
 	@PostMapping("/registry")
-	public ResponseEntity<?> registry(@RequestBody UserDTO dto) throws JsonProcessingException {
-		String code = RandomUtils.random();
+	public ResponseEntity<?> registry(@RequestBody UserRegisterDTO dto) throws JsonProcessingException {
+		String code = RandomUtils.randomConfirmationCode();
 		System.out.println(code);
 		Map<String, Object> info = new HashMap<>();
 		info.put("userDTO", dto);

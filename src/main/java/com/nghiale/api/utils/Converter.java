@@ -28,6 +28,10 @@ public class Converter {
 						fromSet.forEach(object -> {
 							if (!toSet.contains(object)) {
 								toSet.add(object);
+							} else {
+								toSet.forEach(bo -> {
+									if (bo.equals(object)) convert(object, bo);
+								});
 							}
 						});
 					} else {

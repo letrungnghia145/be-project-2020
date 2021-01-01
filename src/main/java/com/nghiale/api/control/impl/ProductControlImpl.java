@@ -14,6 +14,7 @@ import com.nghiale.api.model.Evaluate;
 import com.nghiale.api.model.Image;
 import com.nghiale.api.model.Product;
 import com.nghiale.api.utils.Converter;
+import com.nghiale.api.utils.RandomUtils;
 
 @Service
 public class ProductControlImpl implements ProductControl {
@@ -27,6 +28,7 @@ public class ProductControlImpl implements ProductControl {
 
 	@Override
 	public Product addProduct(Product product) {
+		product.setProductCode(RandomUtils.randomUUIDCode());
 		return productEntity.save(product);
 	}
 
@@ -87,7 +89,7 @@ public class ProductControlImpl implements ProductControl {
 	}
 
 	@Override
-	public List<Evaluate> getProductEvaluates(Long productID) {
+	public List<Evaluate> getAllProductEvaluates(Long productID) {
 		List<Evaluate> evaluates = new ArrayList<>();
 		productEntity.findByIdWithImagesGraph(productID).ifPresent(product -> {
 			product.getEvaluates().forEach(evaluate -> evaluates.add(evaluate));
@@ -96,7 +98,9 @@ public class ProductControlImpl implements ProductControl {
 	}
 
 	@Override
+	@Transactional
 	public List<Evaluate> addProductEvaluate(Long productID, Evaluate evaluate) {
+		evaluate.setEvaluateCode(RandomUtils.randomUUIDCode());
 		List<Evaluate> evaluates = new ArrayList<>();
 		Optional<Product> findByIdWithEvaluatesGraph = productEntity.findByIdWithEvaluatesGraph(productID);
 		findByIdWithEvaluatesGraph.ifPresent(product -> product.addEvaluate(evaluate));
@@ -105,14 +109,12 @@ public class ProductControlImpl implements ProductControl {
 	}
 
 	@Override
-	public Product deleteProductEvaluate(Long productID, Long evaluateID) {
+	public List<Evaluate> deleteProductEvaluate(Long productID, Long evaluateID) {
+		List<Evaluate> evaluates = new ArrayList<>();
 		Optional<Product> findByIdWithEvaluatesGraph = productEntity.findByIdWithEvaluatesGraph(productID);
-		findByIdWithEvaluatesGraph.ifPresent(product -> {
-			Evaluate evaluate = new Evaluate();
-			evaluate.setId(evaluateID);
-			product.deleteEvaluate(evaluate);
-		});
-		return findByIdWithEvaluatesGraph.get();
+		findByIdWithEvaluatesGraph.ifPresent(product -> product.deleteEvaluate(new Evaluate(evaluateID)));
+		findByIdWithEvaluatesGraph.get().getEvaluates().forEach(evl -> evaluates.add(evl));
+		return evaluates;
 	}
 
 }

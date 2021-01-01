@@ -1,8 +1,5 @@
 package com.nghiale.api;
 
-import java.util.Date;
-import java.util.Map;
-
 import javax.persistence.EntityManager;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,13 +13,9 @@ import org.springframework.transaction.annotation.Transactional;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nghiale.api.control.ProductControl;
 import com.nghiale.api.control.UserControl;
-import com.nghiale.api.dto.UserDTO;
 import com.nghiale.api.entity.ProductEntity;
 import com.nghiale.api.entity.UserEntity;
-import com.nghiale.api.mapper.UserMapper;
-import com.nghiale.api.model.Seller;
 import com.nghiale.api.model.User;
-import com.nghiale.api.utils.TokenUtils;
 
 @SpringBootApplication(exclude = SecurityAutoConfiguration.class)
 @EntityScan(basePackages = "com.nghiale.api.model")
@@ -46,7 +39,6 @@ public class ApiApplication implements CommandLineRunner {
 	}
 
 	@Override
-	@Transactional
 	public void run(String... args) throws Exception {
 	}
 }

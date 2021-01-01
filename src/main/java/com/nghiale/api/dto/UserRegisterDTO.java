@@ -5,15 +5,13 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
 @NoArgsConstructor
+@ToString
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class UserDTO {
-	private String userCode;
-	private String name;
-	private String phone;
-	private String address;
-	private String email;
+public class UserRegisterDTO extends UserDTO {
+	private String password;
 }

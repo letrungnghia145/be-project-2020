@@ -23,9 +23,9 @@ public interface ProductControl {
 
 	public List<Image> deleteProductImage(Long productID, Long imageID);
 
-	public List<Evaluate> getProductEvaluates(Long productID);
+	public List<Evaluate> getAllProductEvaluates(Long productID);
 
 	public List<Evaluate> addProductEvaluate(Long productID, Evaluate evaluate);
 
-	public Product deleteProductEvaluate(Long productID, Long evaluateID);
+	public List<Evaluate> deleteProductEvaluate(Long productID, Long evaluateID);
 }

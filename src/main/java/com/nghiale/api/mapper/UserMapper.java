@@ -13,17 +13,17 @@ import lombok.Setter;
 @Service
 public class UserMapper implements Mapper<User, UserDTO> {
 	@Setter
-	private Class<? extends User> UserClassType;
+	private Class<? extends User> userClassType;
 
 	@Override
 	public User convertToBO(UserDTO dto) {
 		Object to = null;
 		try {
-			Constructor<?> constructor = UserClassType.getConstructor();
+			Constructor<?> constructor = userClassType.getConstructor();
 			to = constructor.newInstance();
 			Converter.convert(dto, to);
 		} catch (Exception e) {
-			// TODO: handle exception
+			e.printStackTrace();
 		}
 		return (User) to;
 	}

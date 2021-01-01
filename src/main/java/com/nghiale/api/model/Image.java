@@ -21,6 +21,7 @@ import lombok.ToString;
 public class Image extends AbstractModel {
 	private static final long serialVersionUID = -7036987774546848193L;
 	@EqualsAndHashCode.Include
+//	@Column(unique = true)
 	private String link;
 	private String description;
 

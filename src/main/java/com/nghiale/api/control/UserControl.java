@@ -8,11 +8,11 @@ import com.nghiale.api.model.Order;
 import com.nghiale.api.model.User;
 
 public interface UserControl {
-	
+
 	public User addUser(User user);
-	
+
 	public User getUserDetails(Long userID);
-	
+
 	public List<User> getAllUsers();
 
 	public User deleteUser(Long userID);
@@ -28,12 +28,8 @@ public interface UserControl {
 	public List<CartItem> addItemToCart(Long customerID, CartItem item);
 
 	public List<CartItem> updateCartItemQuantity(Long customerID, CartItem item);
-	
+
 	public List<Evaluate> getAllCustomerEvaluate(Long customerID);
-	
-	public List<Evaluate> addCustomerEvaluate(Long customerID, Evaluate evaluate);
-	
-	public List<Evaluate> deleteCustomerEvaluate(Long customerID, Long evaluateID);
-	
+
 	public Class<? extends User> getUserClassType(Long userID);
 }
