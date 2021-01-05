@@ -1,6 +1,5 @@
 package com.nghiale.api.control.impl;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,102 +18,71 @@ import com.nghiale.api.utils.RandomUtils;
 @Service
 public class ProductControlImpl implements ProductControl {
 	@Autowired
-	private ProductEntity productEntity;
+	private ProductEntity entity;
 
 	@Override
 	public List<Product> getAllProducts() {
-		return productEntity.findAll();
+		return entity.findAll();
 	}
 
 	@Override
-	public Product addProduct(Product product) {
+	public Product getProduct(Long productID) {
+		return entity.findById(productID).get();
+	}
+
+	@Override
+	public void addProduct(Product product) {
 		product.setProductCode(RandomUtils.randomUUIDCode());
-		return productEntity.save(product);
+		Product save = entity.save(product);
+		System.out.println(save);
+	}
+
+	@Override
+	public void deleteProduct(Long productID) {
+		entity.findByIdToDelete(productID).ifPresent(product -> entity.delete(product));
 	}
 
 	@Override
 	@Transactional
-	public Product updateProductDetails(Product product) {
-		Optional<Product> findById = productEntity.findById(product.getId());
-		findById.ifPresent(bo -> {
-			Converter.convert(product, bo);
-		});
-		return findById.get();
-	}
-
-	@Override
-	public Product deleteProduct(Long productID) {
-		Optional<Product> findById = productEntity.findById(productID);
-		findById.ifPresent(product -> productEntity.delete(product));
-		return findById.get();
-	}
-
-	@Override
-	public Product getProductDetails(Long productID) {
-		Optional<Product> findById = productEntity.findById(productID);
-		return findById.get();
-	}
-
-	@Override
-	public List<Image> getAllProductImages(Long productID) {
-		List<Image> images = new ArrayList<>();
-		productEntity.findByIdWithImagesGraph(productID).ifPresent(product -> {
-			product.getImages().forEach(image -> images.add(image));
-		});
-		return images;
-	}
-
-	@Override
-	@Transactional
-	public List<Image> addProductImages(Long productID, List<Image> images) {
-		Optional<Product> findByIdWithImagesGraph = productEntity.findByIdWithImagesGraph(productID);
-		findByIdWithImagesGraph.ifPresent(product -> {
-			for (Image image : images) {
-				product.addImage(image);
+	public void updateProduct(Product product) {
+		entity.findById(product.getId()).ifPresent(bo -> {
+			try {
+				Converter.convert(product, bo);
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
 		});
-		return List.copyOf(findByIdWithImagesGraph.get().getImages());
+	}
+
+	@Override
+	public List<Evaluate> getAllEvaluates(Long productID) {
+		Optional<Product> findByIdWithEvaluatesGraph = entity.findByIdWithEvaluatesGraph(productID);
+		return List.copyOf(findByIdWithEvaluatesGraph.get().getEvaluates());
 	}
 
 	@Override
 	@Transactional
-	public List<Image> deleteProductImage(Long productID, Long imageID) {
-		Optional<Product> findByIdWithImagesGraph = productEntity.findByIdWithImagesGraph(productID);
-		findByIdWithImagesGraph.ifPresent(product -> {
-			Image image = new Image();
-			image.setId(imageID);
-			product.deleteImage(image);
-		});
-		return List.copyOf(findByIdWithImagesGraph.get().getImages());
-	}
-
-	@Override
-	public List<Evaluate> getAllProductEvaluates(Long productID) {
-		List<Evaluate> evaluates = new ArrayList<>();
-		productEntity.findByIdWithImagesGraph(productID).ifPresent(product -> {
-			product.getEvaluates().forEach(evaluate -> evaluates.add(evaluate));
-		});
-		return evaluates;
-	}
-
-	@Override
-	@Transactional
-	public List<Evaluate> addProductEvaluate(Long productID, Evaluate evaluate) {
+	public void addEvaluate(Long productID, Evaluate evaluate) {
 		evaluate.setEvaluateCode(RandomUtils.randomUUIDCode());
-		List<Evaluate> evaluates = new ArrayList<>();
-		Optional<Product> findByIdWithEvaluatesGraph = productEntity.findByIdWithEvaluatesGraph(productID);
-		findByIdWithEvaluatesGraph.ifPresent(product -> product.addEvaluate(evaluate));
-		findByIdWithEvaluatesGraph.get().getEvaluates().forEach(evl -> evaluates.add(evl));
-		return evaluates;
+		entity.findByIdWithEvaluatesGraph(productID).ifPresent(product -> product.addEvaluate(evaluate));
 	}
 
 	@Override
-	public List<Evaluate> deleteProductEvaluate(Long productID, Long evaluateID) {
-		List<Evaluate> evaluates = new ArrayList<>();
-		Optional<Product> findByIdWithEvaluatesGraph = productEntity.findByIdWithEvaluatesGraph(productID);
-		findByIdWithEvaluatesGraph.ifPresent(product -> product.deleteEvaluate(new Evaluate(evaluateID)));
-		findByIdWithEvaluatesGraph.get().getEvaluates().forEach(evl -> evaluates.add(evl));
-		return evaluates;
+	public List<Image> getAllImages(Long productID) {
+		Optional<Product> findByIdWithImagesGraph = entity.findByIdWithImagesGraph(productID);
+		return List.copyOf(findByIdWithImagesGraph.get().getImages());
+	}
+
+//	@Override
+//	@Transactional
+//	public void addImage(Long productID, Image image) {
+//		entity.findByIdWithImagesGraph(productID).ifPresent(product -> product.addImage(image));
+//	}
+
+	@Override
+	@Transactional
+	public void deleteImage(Long productID, Long imageID) {
+		entity.findByIdWithImagesGraph(productID).ifPresent(product -> product.deleteImage(new Image(imageID)));
 	}
 
 }

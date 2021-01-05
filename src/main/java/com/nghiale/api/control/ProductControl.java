@@ -9,23 +9,22 @@ import com.nghiale.api.model.Product;
 public interface ProductControl {
 	public List<Product> getAllProducts();
 
-	public Product addProduct(Product product);
+	public Product getProduct(Long productID);
 
-	public Product updateProductDetails(Product product);
+	public void addProduct(Product product);
 
-	public Product deleteProduct(Long productID);
+	public void deleteProduct(Long productID);
 
-	public Product getProductDetails(Long productID);
+	public void updateProduct(Product product);
 
-	public List<Image> getAllProductImages(Long productID);
+	public List<Evaluate> getAllEvaluates(Long productID);
 
-	public List<Image> addProductImages(Long productID, List<Image> images);
-
-	public List<Image> deleteProductImage(Long productID, Long imageID);
-
-	public List<Evaluate> getAllProductEvaluates(Long productID);
-
-	public List<Evaluate> addProductEvaluate(Long productID, Evaluate evaluate);
-
-	public List<Evaluate> deleteProductEvaluate(Long productID, Long evaluateID);
+	public void addEvaluate(Long productID, Evaluate evaluate);
+	
+	public List<Image> getAllImages(Long productID);
+	
+//	public void addImage(Long productID, Image image);
+	
+	public void deleteImage(Long productID, Long imageID);
+	
 }

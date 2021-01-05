@@ -11,10 +11,9 @@ import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfi
 import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nghiale.api.control.ProductControl;
-import com.nghiale.api.control.UserControl;
 import com.nghiale.api.entity.ProductEntity;
-import com.nghiale.api.entity.UserEntity;
+import com.nghiale.api.model.Customer;
+import com.nghiale.api.model.Product;
 import com.nghiale.api.model.User;
 
 @SpringBootApplication(exclude = SecurityAutoConfiguration.class)
@@ -22,23 +21,22 @@ import com.nghiale.api.model.User;
 @SuppressWarnings({ "unused" })
 public class ApiApplication implements CommandLineRunner {
 	@Autowired
-	private ProductEntity productEntity;
-	@Autowired
-	private ProductControl control;
-	@Autowired
-	private UserEntity<User> userEntity;
-	@Autowired
-	private UserControl userControl;
-	@Autowired
 	private EntityManager em;
 	@Autowired
 	private ObjectMapper mapper;
+	@Autowired
+	private ProductEntity entity;
 
 	public static void main(String[] args) {
 		SpringApplication.run(ApiApplication.class, args);
 	}
 
 	@Override
+	@Transactional
 	public void run(String... args) throws Exception {
+//		Customer customer = em.find(Customer.class, 1L);
+//		customer.addCartItem(em.find(Product.class, 2L), 1L);
+//		Customer customer = new Customer("Le Trung Nghia", "0868880758", "Tay Ninh", "nghia1k45@gmail.com", "172285633");
+//		em.persist(customer);
 	}
 }

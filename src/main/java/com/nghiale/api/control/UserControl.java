@@ -8,28 +8,33 @@ import com.nghiale.api.model.Order;
 import com.nghiale.api.model.User;
 
 public interface UserControl {
-
-	public User addUser(User user);
-
-	public User getUserDetails(Long userID);
-
 	public List<User> getAllUsers();
 
-	public User deleteUser(Long userID);
+	public User getUser(Long userID);
 
-	public User updateUserDetails(User user);
+	public void addUser(User user);
 
-	public List<Order> getCustomerOrders(Long customerID);
+	public void deleteUser(Long userID);
 
-	public Order getCustomerOrderDetails(Long customerID, Long orderID);
+	public void updateUserDetails(User user);
 
-	public List<CartItem> getCartItems(Long customerID);
+	public List<Evaluate> getAllEvaluates(Long userID);
 
-	public List<CartItem> addItemToCart(Long customerID, CartItem item);
+//	public void addEvaluate(Long userID, Evaluate evaluate);
 
-	public List<CartItem> updateCartItemQuantity(Long customerID, CartItem item);
+	public void deleteEvaluate(Long userID, Long evaluateID);
 
-	public List<Evaluate> getAllCustomerEvaluate(Long customerID);
+	public List<CartItem> getCart(Long userID);
 
-	public Class<? extends User> getUserClassType(Long userID);
+	public void addItemToCart(Long userID, CartItem item);
+
+	public void updateCartItem(Long userID, Long productID, String action);
+
+	public void deleteItemIncart(Long userID, Long productID);
+
+	public List<Order> getAllOrders(Long userID);
+
+	public Order getOrder(Long userID, Long orderID);
+
+//	public void addOrder(Long userID, Order order);
 }

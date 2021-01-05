@@ -1,38 +1,43 @@
 package com.nghiale.api.boundary;
 
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.nghiale.api.control.CategoryControl;
+import com.nghiale.api.model.Category;
+import com.nghiale.api.model.Product;
 
 @RestController
 @RequestMapping("/categories")
 public class CategoryBoundary {
-	@GetMapping
-	public void retrieveAllCategories() {
+	@Autowired
+	private CategoryControl control;
 
+	@GetMapping
+	public List<Category> getAllCategory() {
+		return control.getAllCategory();
 	}
 
 	@PostMapping
-	public void createCategory() {
-
-	}
-
-	@PutMapping("/{cid}")
-	public void updateCategory(@PathVariable Long cid) {
-
+	public void addCategory(@RequestBody Category category) {
+		control.addCategory(category);
 	}
 
 	@DeleteMapping("/{cid}")
-	public void deleteCategory(@PathVariable Long cid) {
-
+	public void deleteCategory(@PathVariable("cid") Long categoryID) {
+		control.deleteCategory(categoryID);
 	}
 
 	@GetMapping("/{cid}/products")
-	public void getAllCategoryProducts(@PathVariable Long cid) {
-
+	public List<Product> getAllProductsByCategory(@PathVariable("cid") Long categoryID) {
+		return control.getAllProductsByCategory(categoryID);
 	}
 }

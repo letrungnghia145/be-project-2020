@@ -9,10 +9,18 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedAttributeNode;
+import javax.persistence.NamedEntityGraph;
+import javax.persistence.NamedSubgraph;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.nghiale.api.contants.Method;
+import com.nghiale.api.serialize.OrderSerialize;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,6 +31,8 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
+@JsonSerialize(using = OrderSerialize.class)
+@NamedEntityGraph(name = "Order.items", attributeNodes = @NamedAttributeNode(value = "items", subgraph = "items.product"), subgraphs = @NamedSubgraph(name = "items.product", attributeNodes = @NamedAttributeNode("product")))
 public class Order extends AbstractModel {
 	private static final long serialVersionUID = 560226111253281070L;
 	@Column(unique = true)
@@ -35,8 +45,28 @@ public class Order extends AbstractModel {
 	private String consigneeName;
 	private String consigneePhone;
 	private String address;
-	@ManyToOne(fetch = FetchType.LAZY)
-	private PayMethod payMethod;
+	private Method payMethod;
 	@OneToMany(mappedBy = "order", orphanRemoval = true, cascade = CascadeType.ALL)
 	private Set<OrderItem> items;
+
+	@JsonCreator
+	public Order(Long customerID, Date purchaseDate, BigDecimal total, String consigneeName, String consigneePhone,
+			String address, Method payMethod, Set<OrderItem> items) {
+		super();
+		this.customer = customerID != null ? new Customer(customerID) : null;
+		this.purchaseDate = purchaseDate;
+		this.total = total;
+		this.consigneeName = consigneeName;
+		this.consigneePhone = consigneePhone;
+		this.address = address;
+		this.payMethod = payMethod;
+		this.items = items;
+//		this.items = items;
+	}
+
+	public void addItem(Product product, Long quantity) {
+		OrderItem item = new OrderItem(this, product, quantity);
+		this.items.add(item);
+	}
+
 }
