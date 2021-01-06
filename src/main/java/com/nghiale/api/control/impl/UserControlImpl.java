@@ -7,14 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.nghiale.api.contants.UpdateCartAction;
 import com.nghiale.api.control.UserControl;
-import com.nghiale.api.entity.CustomerEntity;
-import com.nghiale.api.entity.OrderEntity;
 import com.nghiale.api.entity.ProductEntity;
 import com.nghiale.api.entity.UserEntity;
 import com.nghiale.api.model.CartItem;
-import com.nghiale.api.model.Customer;
 import com.nghiale.api.model.Evaluate;
 import com.nghiale.api.model.Order;
 import com.nghiale.api.model.Product;
@@ -23,9 +19,7 @@ import com.nghiale.api.model.User;
 @Service
 public class UserControlImpl implements UserControl {
 	@Autowired
-	private UserEntity<User> userEntity;
-	@Autowired
-	private CustomerEntity customerEntity;
+	private UserEntity userEntity;
 	@Autowired
 	private ProductEntity productEntity;
 
@@ -59,7 +53,7 @@ public class UserControlImpl implements UserControl {
 
 	@Override
 	public List<Evaluate> getAllEvaluates(Long userID) {
-		Optional<Customer> findById = customerEntity.findById(userID);
+		Optional<User> findById = userEntity.findByIdWithEvaluatesGraph(userID);
 		return List.copyOf(findById.get().getEvaluates());
 	}
 
@@ -71,7 +65,7 @@ public class UserControlImpl implements UserControl {
 
 	@Override
 	public List<CartItem> getCart(Long userID) {
-		Optional<Customer> findByIdWithItemsGraph = customerEntity.findByIdWithItemsGraph(userID);
+		Optional<User> findByIdWithItemsGraph = userEntity.findByIdWithItemsGraph(userID);
 		return List.copyOf(findByIdWithItemsGraph.get().getItems());
 	}
 
@@ -79,7 +73,7 @@ public class UserControlImpl implements UserControl {
 	@Transactional
 	public void addItemToCart(Long userID, CartItem item) {
 		Product mergeProduct = productEntity.getOne(item.getProduct().getId());
-		customerEntity.findByIdWithItemsGraph(userID)
+		userEntity.findByIdWithItemsGraph(userID)
 				.ifPresent(customer -> customer.addCartItem(mergeProduct, item.getQuantity()));
 	}
 
@@ -87,27 +81,27 @@ public class UserControlImpl implements UserControl {
 	@Transactional
 	public void deleteItemIncart(Long userID, Long productID) {
 		Product mergeProduct = productEntity.getOne(productID);
-		customerEntity.findByIdWithItemsGraph(userID).ifPresent(customer -> customer.removeCartItem(mergeProduct));
+		userEntity.findByIdWithItemsGraph(userID).ifPresent(customer -> customer.removeCartItem(mergeProduct));
 	}
 
 	@Override
 	@Transactional
 	public void updateCartItem(Long userID, Long productID, String action) {
 		Product mergeProduct = productEntity.getOne(productID);
-		customerEntity.findByIdWithItemsGraph(userID).ifPresent(customer -> {
+		userEntity.findByIdWithItemsGraph(userID).ifPresent(customer -> {
 			customer.updateCart(mergeProduct, action);
 		});
 	}
 
 	@Override
 	public List<Order> getAllOrders(Long userID) {
-		Optional<Customer> findByIdWithOrdersGraph = customerEntity.findByIdWithOrdersGraph(userID);
+		Optional<User> findByIdWithOrdersGraph = userEntity.findByIdWithOrdersGraph(userID);
 		return List.copyOf(findByIdWithOrdersGraph.get().getOrders());
 	}
 
 	@Override
 	public Order getOrder(Long userID, Long orderID) {
-		return customerEntity.getOrderDetails(userID, orderID);
+		return userEntity.getOrderDetails(userID, orderID);
 	}
 
 //	@Override

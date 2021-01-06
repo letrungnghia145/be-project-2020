@@ -3,6 +3,7 @@ package com.nghiale.api.boundary;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -34,16 +35,19 @@ public class ProductBoundary {
 	}
 
 	@PostMapping
+	@PreAuthorize("hasAuthority('product:create')")
 	public void addProduct(@RequestBody Product product) {
 		control.addProduct(product);
 	}
 
 	@DeleteMapping("/{pid}")
+	@PreAuthorize("hasAuthority('product:delete')")
 	public void deleteProduct(@PathVariable("pid") Long productID) {
 		control.deleteProduct(productID);
 	}
 
 	@PutMapping("/{pid}")
+	@PreAuthorize("hasAuthority('product:update')")
 	public void updateProduct(@PathVariable("pid") Long productID, @RequestBody Product product) {
 		product.setId(productID);
 		control.updateProduct(product);

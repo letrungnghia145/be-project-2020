@@ -64,7 +64,7 @@ public class Product extends AbstractModel {
 	private Category category;
 
 	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "wishlist")
-	private Set<Customer> customers;
+	private Set<User> customers;
 
 	@OneToMany(mappedBy = "product", orphanRemoval = true, cascade = CascadeType.ALL)
 	private Set<CartItem> items = new HashSet<>();

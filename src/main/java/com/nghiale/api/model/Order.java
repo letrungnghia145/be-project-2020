@@ -41,7 +41,7 @@ public class Order extends AbstractModel {
 	private Date purchaseDate;
 	private BigDecimal total;
 	@ManyToOne(fetch = FetchType.LAZY)
-	private Customer customer;
+	private User customer;
 	private String consigneeName;
 	private String consigneePhone;
 	private String address;
@@ -53,7 +53,7 @@ public class Order extends AbstractModel {
 	public Order(Long customerID, Date purchaseDate, BigDecimal total, String consigneeName, String consigneePhone,
 			String address, Method payMethod, Set<OrderItem> items) {
 		super();
-		this.customer = customerID != null ? new Customer(customerID) : null;
+		this.customer = customerID != null ? new User(customerID) : null;
 		this.purchaseDate = purchaseDate;
 		this.total = total;
 		this.consigneeName = consigneeName;

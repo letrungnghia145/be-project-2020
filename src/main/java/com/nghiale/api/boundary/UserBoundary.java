@@ -3,6 +3,7 @@ package com.nghiale.api.boundary;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.nghiale.api.control.UserControl;
-import com.nghiale.api.dto.ProductQuantityWrapper;
 import com.nghiale.api.model.CartItem;
 import com.nghiale.api.model.Evaluate;
 import com.nghiale.api.model.Order;
@@ -27,47 +27,56 @@ public class UserBoundary {
 	private UserControl control;
 
 	@GetMapping
+	@PreAuthorize("hasAuthority('users:retrieve')")
 	public List<User> getAllUsers() {
 		return control.getAllUsers();
 	}
 
 	@GetMapping("/{uid}")
+	@PreAuthorize("hasAuthority('user:retrieve')")
 	public User getUser(@PathVariable("uid") Long userID) {
 		return control.getUser(userID);
 	}
 
 	@GetMapping("/{cid}/evaluates")
+	@PreAuthorize("hasAuthority('customer-evaluates:retrieve')")
 	public List<Evaluate> getAllEvaluates(@PathVariable("cid") Long customerID) {
 		return control.getAllEvaluates(customerID);
 	}
 
 	@GetMapping("/{cid}/cart-items")
+	@PreAuthorize("hasAuthority('cart:retrieve')")
 	public List<CartItem> getCart(@PathVariable("cid") Long customerID) {
 		return control.getCart(customerID);
 	}
 
 	@PostMapping("/{cid}/cart-items")
+	@PreAuthorize("hasAuthority('cart-item:create')")
 	public void addItemToCart(@PathVariable("cid") Long customerID, @RequestBody CartItem item) {
 		control.addItemToCart(customerID, item);
 	}
 
 	@DeleteMapping("/{cid}/cart-items/{iid}")
+	@PreAuthorize("hasAuthority('cart-item:delete')")
 	public void deleteItemInCart(@PathVariable("cid") Long customerID, @PathVariable("iid") Long itemID) {
 		control.deleteItemIncart(customerID, itemID);
 	}
 
 	@PutMapping("/{cid}/cart-items/{iid}")
+	@PreAuthorize("hasAuthority('cart-item:update')")
 	public void updateCart(@PathVariable("cid") Long customerID, @PathVariable("iid") Long itemID,
 			@RequestParam String action) {
 		control.updateCartItem(customerID, itemID, action);
 	}
 
 	@GetMapping("/{cid}/orders")
+	@PreAuthorize("hasAuthority('customer-orders:retrieve')")
 	public List<Order> getAllOrders(@PathVariable("cid") Long customerID) {
 		return control.getAllOrders(customerID);
 	}
 
 	@GetMapping("/{cid}/orders/{oid}")
+	@PreAuthorize("hasAuthority('customer-order:retrieve')")
 	public Order getOrderDetails(@PathVariable("cid") Long customerID, @PathVariable("oid") Long orderID) {
 		return control.getOrder(customerID, orderID);
 	}

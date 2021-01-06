@@ -40,7 +40,7 @@ public class Evaluate extends AbstractModel {
 	private Product product;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	private Customer customer;
+	private User customer;
 
 	public Evaluate(Long id) {
 		super(id);
@@ -51,7 +51,7 @@ public class Evaluate extends AbstractModel {
 		super();
 		this.comment = comment;
 		this.value = value;
-		this.customer = new Customer(customerID);
+		this.customer = new User(customerID);
 	}
 
 }

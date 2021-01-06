@@ -31,7 +31,7 @@ public class CartItem {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@MapsId("customerId")
 	@Include
-	private Customer customer;
+	private User customer;
 	@ManyToOne(fetch = FetchType.LAZY)
 	@MapsId("productId")
 	@Include
@@ -39,7 +39,7 @@ public class CartItem {
 	@Column(columnDefinition = "int(5)")
 	private Long quantity;
 
-	public CartItem(Customer customer, Product product, Long quantity) {
+	public CartItem(User customer, Product product, Long quantity) {
 		super();
 		this.pk = new PkCartItem(customer.getId(), product.getId());
 		this.customer = customer;

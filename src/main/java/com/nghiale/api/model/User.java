@@ -1,39 +1,46 @@
 package com.nghiale.api.model;
 
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
-import javax.persistence.DiscriminatorColumn;
-import javax.persistence.DiscriminatorType;
 import javax.persistence.Entity;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.NamedAttributeNode;
+import javax.persistence.NamedEntityGraph;
+import javax.persistence.NamedSubgraph;
+import javax.persistence.OneToMany;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonSubTypes;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
 @Entity
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name = "user_type", discriminatorType = DiscriminatorType.STRING)
 @Getter
 @Setter
 @NoArgsConstructor
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY)
-@JsonSubTypes({ @JsonSubTypes.Type(value = Customer.class, name = "CUSTOMER"),
-		@JsonSubTypes.Type(value = Seller.class, name = "SELLER"),
-		@JsonSubTypes.Type(value = Forwarder.class, name = "FORWARDER"), })
-@ToString
-public abstract class User extends AbstractModel {
+@NamedEntityGraph(name = "Customer.orders", attributeNodes = @NamedAttributeNode(value = "orders", subgraph = "Order.graph"), subgraphs = {
+		@NamedSubgraph(name = "Order.graph", attributeNodes = { @NamedAttributeNode("payMethod"),
+				@NamedAttributeNode(value = "items", subgraph = "OrderItem.graph") }),
+		@NamedSubgraph(name = "OrderItem.graph", attributeNodes = @NamedAttributeNode("product")) })
+@NamedEntityGraph(name = "Customer.items", attributeNodes = @NamedAttributeNode(value = "items", subgraph = "items.graph"), subgraphs = {
+		@NamedSubgraph(name = "items.graph", attributeNodes = {
+				@NamedAttributeNode(value = "product", subgraph = "product.graph") }),
+		@NamedSubgraph(name = "product.graph", attributeNodes = @NamedAttributeNode("images")) })
+@NamedEntityGraph(name = "Customer.evaluates", attributeNodes = @NamedAttributeNode("evaluates"))
+@NamedEntityGraph(name = "User.roles", attributeNodes = @NamedAttributeNode("roles"))
+@JsonIgnoreProperties({ "roles", "password", "items", "wishlist", "orders", "evaluates" })
+public class User extends AbstractModel {
 	private static final long serialVersionUID = -5352244872926449891L;
+	// All user have
 	@Column(unique = true)
 	private String userCode;
 	private String name;
@@ -46,6 +53,17 @@ public abstract class User extends AbstractModel {
 	@ManyToMany
 	@JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
 	private Set<Role> roles;
+
+	// Customer have
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "customer")
+	private Set<CartItem> items;
+	@ManyToMany
+	@JoinTable(name = "wishlist_product", joinColumns = @JoinColumn(name = "customer_id"), inverseJoinColumns = @JoinColumn(name = "product_id"))
+	private Set<Product> wishlist;
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "customer")
+	private Set<Order> orders;
+	@OneToMany(mappedBy = "customer", fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.ALL)
+	private Set<Evaluate> evaluates = new HashSet<>();
 
 	public User(Long id) {
 		super(id);
@@ -64,6 +82,54 @@ public abstract class User extends AbstractModel {
 		this.address = address;
 		this.email = email;
 		this.password = password;
+	}
+
+	public void addCartItem(Product product, Long quantity) {
+		CartItem cartItem = new CartItem(this, product, quantity);
+		if (!this.items.contains(cartItem)) {
+			this.items.add(cartItem);
+			return;
+		}
+		items.forEach(item -> {
+			if (item.equals(cartItem))
+				item.increaseQuantity(quantity);
+		});
+	}
+
+	public void updateCart(Product product, String action) {
+		for (Iterator<CartItem> iterator = this.items.iterator(); iterator.hasNext();) {
+			CartItem item = iterator.next();
+			if (item.getProduct().equals(product)) {
+				switch (action) {
+				case "increase":
+					item.increaseQuantity(1L);
+					break;
+				case "decrease":
+					if (item.getQuantity() > 1) {
+						item.decreaseQuantity(1L);
+						return;
+					}
+					iterator.remove();
+					break;
+				default:
+					break;
+				}
+			}
+		}
+	}
+
+	public void removeCartItem(Product product) {
+		for (Iterator<CartItem> iterator = this.items.iterator(); iterator.hasNext();) {
+			CartItem item = iterator.next();
+			if (item.getProduct().equals(product)) {
+				iterator.remove();
+			}
+		}
+	}
+
+	public void addOrder(Order order) {
+		this.orders.add(order);
+		order.setCustomer(this);
 	}
 
 }

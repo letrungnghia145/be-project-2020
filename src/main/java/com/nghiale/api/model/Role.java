@@ -8,6 +8,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ManyToMany;
 
+import com.nghiale.api.enums.UserRole;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -19,7 +21,7 @@ import lombok.Setter;
 public class Role extends AbstractModel {
 	private static final long serialVersionUID = 3340536082287241801L;
 	@Column(unique = true)
-	private String name;
+	private UserRole roleName;
 	private String description;
 
 	@ManyToMany(mappedBy = "roles", cascade = CascadeType.ALL)
@@ -27,6 +29,12 @@ public class Role extends AbstractModel {
 
 	public Role(Long id) {
 		super(id);
+	}
+
+	public Role(UserRole roleName) {
+		super();
+		this.roleName = roleName;
+		this.description = roleName.getDescription();
 	}
 
 }

@@ -3,6 +3,7 @@ package com.nghiale.api.boundary;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,11 +21,13 @@ public class OrderBoundary {
 	private OrderControl control;
 
 	@GetMapping
+	@PreAuthorize("hasAuthority('orders:retrieve')")
 	public List<Order> getAllOrders() {
 		return control.getAllOrders();
 	}
 
 	@GetMapping("/{oid}")
+	@PreAuthorize("hasAuthority('order:retrieve')")
 	public Order getOrder(@PathVariable("oid") Long orderID) {
 		return control.getOrder(orderID);
 	}
