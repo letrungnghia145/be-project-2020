@@ -1,20 +1,29 @@
 package com.nghiale.api.control.impl;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nghiale.api.control.UserControl;
 import com.nghiale.api.entity.ProductEntity;
 import com.nghiale.api.entity.UserEntity;
+import com.nghiale.api.exception.ConfirmationCodeError;
 import com.nghiale.api.model.CartItem;
 import com.nghiale.api.model.Evaluate;
 import com.nghiale.api.model.Order;
 import com.nghiale.api.model.Product;
+import com.nghiale.api.model.Role;
 import com.nghiale.api.model.User;
+import com.nghiale.api.utils.Converter;
+import com.nghiale.api.utils.RandomUtils;
+import com.nghiale.api.utils.TimeUtils;
+import com.nghiale.api.utils.TokenUtils;
 
 @Service
 public class UserControlImpl implements UserControl {
@@ -22,6 +31,8 @@ public class UserControlImpl implements UserControl {
 	private UserEntity userEntity;
 	@Autowired
 	private ProductEntity productEntity;
+	@Autowired
+	private ObjectMapper mapper;
 
 	@Override
 	public List<User> getAllUsers() {
@@ -35,20 +46,44 @@ public class UserControlImpl implements UserControl {
 
 	@Override
 	public void addUser(User user) {
-		// TODO Auto-generated method stub
-
+		user.setUserCode(RandomUtils.randomUserCode());
+		userEntity.save(user);
 	}
 
 	@Override
+	@Transactional
+	public boolean registryCutomerAccount(String token, String inputCode) throws Exception {
+		Map<String, Object> information = TokenUtils.getInfomationFromToken(token);
+		User user = mapper.convertValue(information.get("user"), User.class);
+		String validationCode = (String) information.get("validationCode");
+		Long expiredDate = (Long) information.get("expiredDate");
+		if (!TimeUtils.isExpired(new Date(expiredDate)) && inputCode.equals(validationCode)) {
+			user.addRole(new Role(3L));
+			addUser(user);
+			return true;
+		} else {
+			throw new ConfirmationCodeError(!inputCode.equals(validationCode) ? "Invalid code!" : "Expired code!");
+		}
+	}
+
+	@Override
+	@Transactional
 	public void deleteUser(Long userID) {
-		// TODO Auto-generated method stub
-
+		userEntity.findById(userID).ifPresent(user -> {
+			userEntity.delete(user);
+		});
 	}
 
 	@Override
+	@Transactional
 	public void updateUserDetails(User user) {
-		// TODO Auto-generated method stub
-
+		userEntity.findById(user.getId()).ifPresent(bo -> {
+			try {
+				Converter.convert(user, bo);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		});
 	}
 
 	@Override

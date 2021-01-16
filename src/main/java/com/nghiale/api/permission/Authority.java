@@ -1,4 +1,4 @@
-package com.nghiale.api.enums;
+package com.nghiale.api.permission;
 
 public enum Authority {
 //	PRODUCT_RETRIEVE_ALL("products:retrieve"),

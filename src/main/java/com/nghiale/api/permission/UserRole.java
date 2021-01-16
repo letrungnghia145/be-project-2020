@@ -1,4 +1,4 @@
-package com.nghiale.api.enums;
+package com.nghiale.api.permission;
 
 import java.util.Set;
 

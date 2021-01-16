@@ -14,6 +14,8 @@ public interface UserControl {
 
 	public void addUser(User user);
 
+	public boolean registryCutomerAccount(String token, String validationCode) throws Exception;
+
 	public void deleteUser(Long userID);
 
 	public void updateUserDetails(User user);

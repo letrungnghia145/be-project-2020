@@ -5,7 +5,9 @@ import java.util.NoSuchElementException;
 
 import org.hibernate.HibernateException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -42,4 +44,17 @@ public class AppExceptionHandler {
 	public ErrorMessage getAccessDeniedException(Exception exception, WebRequest webRequest) {
 		return new ErrorMessage(403, exception.getMessage());
 	}
+
+	@ResponseStatus(code = HttpStatus.FORBIDDEN)
+	@ExceptionHandler(AuthenticationException.class)
+	public ErrorMessage getAuthenticationException(Exception exception, WebRequest webRequest) {
+		return new ErrorMessage(403, "Authentication error");
+	}
+
+	@ResponseStatus(code = HttpStatus.BAD_REQUEST)
+	@ExceptionHandler(HttpMessageNotReadableException.class)
+	public ErrorMessage getBadRequestException(Exception exception, WebRequest webRequest) {
+		return new ErrorMessage(400, "Missing request body");
+	}
+
 }

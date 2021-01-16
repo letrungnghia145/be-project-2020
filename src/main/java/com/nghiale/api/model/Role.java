@@ -8,7 +8,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ManyToMany;
 
-import com.nghiale.api.enums.UserRole;
+import com.nghiale.api.permission.UserRole;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

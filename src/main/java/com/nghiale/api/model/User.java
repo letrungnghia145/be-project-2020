@@ -16,6 +16,8 @@ import javax.persistence.NamedEntityGraph;
 import javax.persistence.NamedSubgraph;
 import javax.persistence.OneToMany;
 
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -37,7 +39,7 @@ import lombok.Setter;
 		@NamedSubgraph(name = "product.graph", attributeNodes = @NamedAttributeNode("images")) })
 @NamedEntityGraph(name = "Customer.evaluates", attributeNodes = @NamedAttributeNode("evaluates"))
 @NamedEntityGraph(name = "User.roles", attributeNodes = @NamedAttributeNode("roles"))
-@JsonIgnoreProperties({ "roles", "password", "items", "wishlist", "orders", "evaluates" })
+@JsonIgnoreProperties({ "roles", "items", "wishlist", "orders", "evaluates" })
 public class User extends AbstractModel {
 	private static final long serialVersionUID = -5352244872926449891L;
 	// All user have
@@ -52,7 +54,7 @@ public class User extends AbstractModel {
 	private String password;
 	@ManyToMany
 	@JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
-	private Set<Role> roles;
+	private Set<Role> roles = new HashSet<>();
 
 	// Customer have
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "customer")
@@ -81,7 +83,7 @@ public class User extends AbstractModel {
 		this.phone = phone;
 		this.address = address;
 		this.email = email;
-		this.password = password;
+		this.password = new BCryptPasswordEncoder().encode(password);
 	}
 
 	public void addCartItem(Product product, Long quantity) {

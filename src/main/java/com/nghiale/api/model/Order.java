@@ -19,7 +19,6 @@ import javax.persistence.TemporalType;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.nghiale.api.contants.Method;
 import com.nghiale.api.serialize.OrderSerialize;
 
 import lombok.Getter;
@@ -45,13 +44,14 @@ public class Order extends AbstractModel {
 	private String consigneeName;
 	private String consigneePhone;
 	private String address;
-	private Method payMethod;
+//	**
+	private String payMethod;
 	@OneToMany(mappedBy = "order", orphanRemoval = true, cascade = CascadeType.ALL)
 	private Set<OrderItem> items;
 
 	@JsonCreator
 	public Order(Long customerID, Date purchaseDate, BigDecimal total, String consigneeName, String consigneePhone,
-			String address, Method payMethod, Set<OrderItem> items) {
+			String address, String payMethod, Set<OrderItem> items) {
 		super();
 		this.customer = customerID != null ? new User(customerID) : null;
 		this.purchaseDate = purchaseDate;

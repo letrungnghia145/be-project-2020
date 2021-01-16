@@ -4,12 +4,6 @@ import java.util.Random;
 import java.util.UUID;
 
 public class RandomUtils {
-	public static String randomConfirmationCode() {
-		Random random = new Random();
-		long nextLong = random.nextInt(999999);
-		String format = String.format("%06d", nextLong);
-		return format;
-	}
 
 	public static String randomUserCode() {
 		StringBuilder builder = new StringBuilder();
@@ -23,5 +17,12 @@ public class RandomUtils {
 	public static String randomUUIDCode() {
 		UUID uuid = UUID.randomUUID();
 		return uuid.toString();
+	}
+
+	public static String generateValidationCode() {
+		Random random = new Random();
+		String f1 = String.format("%03d", random.nextInt(999));
+		String f2 = String.format("%03d", random.nextInt(999));
+		return f1.concat(f2);
 	}
 }

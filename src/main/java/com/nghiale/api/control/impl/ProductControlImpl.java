@@ -31,6 +31,7 @@ public class ProductControlImpl implements ProductControl {
 	}
 
 	@Override
+	@Transactional
 	public void addProduct(Product product) {
 		product.setProductCode(RandomUtils.randomUUIDCode());
 		Product save = entity.save(product);
