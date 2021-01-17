@@ -10,12 +10,13 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
-//@ToString
+@ToString
 @JsonIgnoreProperties({ "product" })
 public class Image extends AbstractModel {
 	private static final long serialVersionUID = -7036987774546848193L;

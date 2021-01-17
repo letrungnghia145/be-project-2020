@@ -18,6 +18,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -50,8 +52,10 @@ public class Product extends AbstractModel {
 	private String name;
 	private BigDecimal price;
 	@Temporal(TemporalType.DATE)
+	@DateTimeFormat(pattern = "dd/mm/yyyy")
 	private Date mfg;
 	@Temporal(TemporalType.DATE)
+	@DateTimeFormat(pattern = "dd/mm/yyyy")
 	private Date exp;
 	private Long stock;
 	@Column(columnDefinition = "text")

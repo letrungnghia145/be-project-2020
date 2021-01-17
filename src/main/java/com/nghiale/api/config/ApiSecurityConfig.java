@@ -32,6 +32,8 @@ public class ApiSecurityConfig extends WebSecurityConfigurerAdapter {
 				.authorizeRequests().antMatchers(HttpMethod.GET, "/products/**").permitAll()
 				.antMatchers("/users/authenticate").permitAll()
 				.antMatchers("/users/registry/**").permitAll()
+				.antMatchers("/uploads").permitAll()
+				.antMatchers("/images/**").permitAll()
 				.antMatchers(HttpMethod.POST, "/products/*/evaluates").permitAll()
 				.antMatchers(HttpMethod.POST, "/orders").permitAll().antMatchers(HttpMethod.GET, "/categories/**")
 				.permitAll().anyRequest().authenticated().and()

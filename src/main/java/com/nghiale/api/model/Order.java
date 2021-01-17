@@ -50,18 +50,17 @@ public class Order extends AbstractModel {
 	private Set<OrderItem> items;
 
 	@JsonCreator
-	public Order(Long customerID, Date purchaseDate, BigDecimal total, String consigneeName, String consigneePhone,
-			String address, String payMethod, Set<OrderItem> items) {
+	public Order(Long customerID, BigDecimal total, String consigneeName, String consigneePhone, String address,
+			String payMethod, Set<OrderItem> items) {
 		super();
 		this.customer = customerID != null ? new User(customerID) : null;
-		this.purchaseDate = purchaseDate;
+		this.purchaseDate = new Date(System.currentTimeMillis());
 		this.total = total;
 		this.consigneeName = consigneeName;
 		this.consigneePhone = consigneePhone;
 		this.address = address;
 		this.payMethod = payMethod;
 		this.items = items;
-//		this.items = items;
 	}
 
 	public void addItem(Product product, Long quantity) {
